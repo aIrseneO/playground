@@ -1,0 +1,6 @@
+# Vagrant runtime directories and files
+.vagrant/
+
+# Temp vim files
+*.swp
+*/*.swp
