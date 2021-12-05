@@ -1,0 +1,5 @@
+host *
+user					vagrant
+ForwardX11				yes
+StrictHostKeyChecking	no
+UserKnownHostsFile		/dev/null

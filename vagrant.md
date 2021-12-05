@@ -21,12 +21,25 @@ vagrant [suspend | resume | reload] [vm-name] # Self explanatory
 
 NOTE: 
 - ```vm-name``` is defined in the Vagrantfile.
-- if no ```vm-name``` is supplied the above commands will be applied to all configured VMs
+- if no ```vm-name``` is supplied the above commands will be applied to all \
+	configured VMs which don't have the `autostart` set to `false`.
 
-Others:
+### Provision a running VM
+```bash
+vagrant provision <vm-name> --provision-with <provision Names>
+vagrant provision --help
+```
+
+### Check Boxes
+```bash
+vagrant box list
+vagrant box --help # For more
+```
+
+### Others:
 ```bash
 vagrant status # Check the status of all instances
-vagrant ssh <vm-name> # Ssh into an instance
+vagrant ssh <vm-name> # ssh into a VM instance
 
 vagrant [command] --help # Check other commands of vagrant
 ```

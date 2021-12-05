@@ -7,5 +7,5 @@
 ################################################################################
 
 echo -e "\n[Step 0] Generate and save cluster join command to /joincluster.sh"
-kubeadm token create --print-join-command > joincluster.sh
-chown $(id -u):$(id -g) joincluster.sh
+kubeadm token create --print-join-command > /home/vagrant/joincluster.sh
+chown $(id -u):$(id -g) /home/vagrant/joincluster.sh
