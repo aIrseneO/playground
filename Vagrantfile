@@ -37,6 +37,10 @@ Vagrant.configure("2") do |config|
   config.vm.provision "myconf", type: "shell", run: "never",
     path: "shared/mydefault-conf.sh", args: "vagrant root"
 
+  config.vm.provision "helm", type: "shell", run: "never",
+    path: "shared/bootstrap-helm.sh"
+
+  #TODO: Use a personalized ssh conf `mySshConfig`
   config.vm.provision "file", run: "once", source: "shared/ssh_config",
     destination: "/home/vagrant/.ssh/config"
 
