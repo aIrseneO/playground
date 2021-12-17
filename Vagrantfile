@@ -238,11 +238,11 @@ Vagrant.configure("2") do |config|
   # https://docs.projectcalico.org/getting-started/kubernetes/requirements
   CIDR				= "192.168.0.0/16"
 
-  MastersIP			= "192.168.84"
-  MinMaster			= 10;				MaxMaster = 13
+  MastersIP			= "192.168.0"
+  MinMaster			= 100;				MaxMaster = 100
 
-  WorkersIP			= "192.168.84"
-  MinWorker			= 100;				MaxWorker = 103
+  WorkersIP			= "192.168.0"
+  MinWorker			= 110;				MaxWorker = 112
 
   config.vm.provision "staticHosts", type: "shell", run: "once",
     inline: <<-SHELL
