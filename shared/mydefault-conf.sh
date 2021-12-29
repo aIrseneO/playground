@@ -24,14 +24,4 @@ for USER in $@; do
 done
 
 rm -rf /_linux
-
-if [[ "`which kubectl | wc -l`" != "0" ]]; then
-	apt-get install -y bash-completion > /dev/null #2>&1
-	sudo -H -u vagrant bash -c "source <(kubectl completion bash)"
-	sudo -H -u vagrant bash -c \
-		"echo \"source <(kubectl completion bash)\" >> /home/vagrant/.bashrc"
-	source <(kubectl completion bash)
-	echo "source <(kubectl completion bash)" >> $HOME/.bashrc
-fi
-
-echo "Done!"
+echo Done!

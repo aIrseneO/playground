@@ -34,20 +34,19 @@ Vagrant.configure("2") do |config|
   config.vm.provision "docker", type: "shell", run: "never",
     path: "shared/bootstrap-docker-ubuntu.sh"
 
+  #TODO: fix
   config.vm.provision "myconf", type: "shell", run: "never",
     path: "shared/mydefault-conf.sh", args: "vagrant root"
 
   config.vm.provision "helm", type: "shell", run: "never",
     path: "shared/bootstrap-helm.sh"
 
-  #TODO: Use a personalized ssh conf `mySshConfig`
+  #TODO: Use a personalized ssh conf `mySshConfig`?
   config.vm.provision "file", run: "once", source: "shared/ssh_config",
     destination: "/home/vagrant/.ssh/config"
 
-  ID = "__ID__"
-  OUTPUT_FILE = "/root/Resources.tar.gzip"
   config.vm.provision "private", type: "shell", run: "never",
-    path: "shared/googleDownload.sh", args: "#{ID} #{OUTPUT_FILE}"
+    path: "shared/googleDownload.sh", args: "#{ENV['ID']} #{ENV['OUT']}"
 
   # Default Machine (for testing)_______________________________________________
   config.vm.define "test", primary: true do |default|
@@ -165,13 +164,16 @@ Vagrant.configure("2") do |config|
   config.vm.define "docker", autostart: false do |docker|
     docker.vm.hostname = "docker"
     docker.vm.box = "generic/ubuntu1804"
-    docker.vm.network "forwarded_port", guest: 80, host: 8080
+    docker.vm.network "public_network", ip: "192.168.0.242"
+    # Port for Jenkins
+    #docker.vm.network "forwarded_port", guest: 8080, host: 8080
+    #docker.vm.network "forwarded_port", guest: 50000, host: 50000
 
     docker.vm.provider "virtualbox" do |vb|
       vb.name = "docker"
       vb.gui = false
-      vb.cpus = "2"
-      vb.memory = "1024"
+      vb.cpus = "3"
+      vb.memory = "2048"
     end
 
     docker.vm.provision "staticHosts", type: "shell", run: "once", inline: "#"
@@ -238,6 +240,7 @@ Vagrant.configure("2") do |config|
   # https://docs.projectcalico.org/getting-started/kubernetes/requirements
   CIDR				= "192.168.0.0/16"
 
+  # Check each IP address availability before use, e.g.: `nmap 192.168.100/32`
   MastersIP			= "192.168.0"
   MinMaster			= 100;				MaxMaster = 100
 

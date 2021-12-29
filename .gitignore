@@ -4,3 +4,6 @@
 # Temp vim files
 *.swp
 */*.swp
+
+# Local scripts
+local.sh
