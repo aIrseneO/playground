@@ -231,6 +231,26 @@ Vagrant.configure("2") do |config|
     mk.vm.provision "shell", run: "once",
       path: "shared/bootstrap-minikube-node.sh"
   end
+
+# Minnaker
+  config.vm.define "minnaker", autostart: false do |minnik|
+    minnik.vm.hostname = "minnaker"
+    minnik.vm.box = "generic/ubuntu1804"
+    minnik.vm.network "public_network", ip: "192.168.0.90"
+	minnik.vm.boot_timeout = 500
+
+    minnik.vm.provider "virtualbox" do |vb|
+      vb.name = "minnaker"
+      vb.gui = false
+      vb.cpus = "4"
+      vb.memory = "10240"
+    end
+
+    minnik.vm.provision "staticHosts", type: "shell", run: "once", inline: "#"
+
+    minnik.vm.provision "shell", run: "once",
+      path: "shared/bootstrap-minnaker-node.sh", args: "192.168.0.90"
+  end
  
 # HA K8S Cluster________________________________________________________________
   #TODO Deploy a Load Balancer for HA Cluster
