@@ -248,8 +248,9 @@ Vagrant.configure("2") do |config|
 
     minnik.vm.provision "staticHosts", type: "shell", run: "once", inline: "#"
 
-    minnik.vm.provision "shell", run: "once",
-      path: "shared/bootstrap-minnaker-node.sh", args: "192.168.0.90"
+#    minnik.vm.provision "shell", run: "once",
+#      path: "shared/bootstrap-minnaker-node.sh", args: "192.168.0.90"
+
   end
  
 # HA K8S Cluster________________________________________________________________
@@ -289,17 +290,17 @@ Vagrant.configure("2") do |config|
   SHELL
 
   config.vm.provision "generateJoinCommand", type: "shell", run: "never",
-    path: "shared/generate-join-command.sh"
+    path: "shared/bootstrap-k8s-join-token.sh"
 
   config.vm.provision "joinMasterNode", type: "shell", run: "never",
-    path: "shared/join-master-node.sh", env: {MASTER:ENV['MASTER']}
+    path: "shared/bootstrap-k8s-join-master.sh", env: {MASTER:ENV['MASTER']}
 
   # Master Node(s)..............................................................
   (MinMaster..MaxMaster).each do |i|
     config.vm.define "master#{i}", autostart: false do |masteri|
       masteri.vm.hostname = "master#{i}"
       masteri.vm.box = "generic/ubuntu1804"
-      masteri.vm.box_version = "3.3.4"
+      masteri.vm.box_version = "3.6.4"
       masteri.vm.box_check_update = false
       masteri.vm.network "public_network", ip: "#{MastersIP}.#{i}"
 
@@ -311,18 +312,21 @@ Vagrant.configure("2") do |config|
       end
 
       masteri.vm.provision "shell", run: "once",
+        path: "shared/bootstrap-k8s-swap-firewall.sh"
+      masteri.vm.provision "shell", run: "once",
+        path: "shared/bootstrap-k8s-iptables.sh"
+      masteri.vm.provision "shell", run: "once",
         path: "shared/bootstrap-docker-ubuntu.sh"
-
       masteri.vm.provision "shell", run: "once",
-        path: "shared/bootstrap-k8s-node.sh"
-
+        path: "shared/bootstrap-k8s-cri.sh"
       masteri.vm.provision "shell", run: "once",
-        path: "shared/bootstrap-k8s-tools.sh",
+        path: "shared/bootstrap-k8s-kube-tools.sh",
         args: "#{K8S_VERSION} kubelet kubeadm kubectl"
-
       masteri.vm.provision "shell", run: "once",
-	    path: "shared/bootstrap-master-node.sh",
-	    args: "#{MastersIP}.#{i} #{K8S_VERSION} #{CALICO_VERSION} #{CIDR}"
+        path: "shared/bootstrap-k8s-init.sh",
+	    args: "#{MastersIP}.#{i} #{K8S_VERSION} #{CIDR}"
+      masteri.vm.provision "shell", run: "once",
+        path: "shared/bootstrap-k8s-cni.sh", args: "#{CALICO_VERSION}"
     end
   end
 
@@ -331,7 +335,7 @@ Vagrant.configure("2") do |config|
     config.vm.define "worker#{i}", autostart: false do |workeri|
       workeri.vm.hostname = "worker#{i}"
       workeri.vm.box = "generic/ubuntu1804"
-      workeri.vm.box_version = "3.3.4"
+      workeri.vm.box_version = "3.6.4"
       workeri.vm.box_check_update = false
       workeri.vm.network "public_network", ip: "#{WorkersIP}.#{i}"
 
@@ -343,13 +347,15 @@ Vagrant.configure("2") do |config|
       end
 
       workeri.vm.provision "shell", run: "once",
+        path: "shared/bootstrap-k8s-swap-firewall.sh"
+      workeri.vm.provision "shell", run: "once",
+        path: "shared/bootstrap-k8s-iptables.sh"
+      workeri.vm.provision "shell", run: "once",
         path: "shared/bootstrap-docker-ubuntu.sh"
-
       workeri.vm.provision "shell", run: "once",
-        path: "shared/bootstrap-k8s-node.sh"
-
+        path: "shared/bootstrap-k8s-cri.sh"
       workeri.vm.provision "shell", run: "once",
-        path: "shared/bootstrap-k8s-tools.sh",
+        path: "shared/bootstrap-k8s-kube-tools.sh",
         args: "#{K8S_VERSION} kubelet kubeadm kubectl"
     end
   end

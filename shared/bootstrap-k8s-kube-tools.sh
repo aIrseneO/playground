@@ -6,16 +6,21 @@
 #     SPDX-License-Identifier: MIT                                             #
 ################################################################################
 
+NAME=kubelet,kubectl,kubeadmn
 VERSION=$1
 
-echo -e "\n[Step 0] Dependencies"
+echo -e "\n[-- Preparing kube tools installation --]"
+
 apt-get update > /dev/null #2>&1
 apt-get install -y apt-transport-https ca-certificates curl > /dev/null #2>&1
+
 curl -fsSLo /usr/share/keyrings/kubernetes-archive-keyring.gpg \
 	https://packages.cloud.google.com/apt/doc/apt-key.gpg > /dev/null #2>&1
+
 echo "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] \
 	https://apt.kubernetes.io/ kubernetes-xenial main" > \
 	/etc/apt/sources.list.d/kubernetes.list
+
 apt-get update > /dev/null #2>&1
 
 # Get the tool(s) to install from the args 
@@ -31,7 +36,7 @@ while [[ "$i" -le "$#" ]]; do
 	i=$((i + 1))
 done
 
-echo -e "\n[Step 1] Install $KUBE"
+echo -e "\n[-- Installing $KUBE --]"
 apt-get install -y $KUBE_V > /dev/null #2>&1
 apt-mark hold $KUBE > /dev/null #2>&1
 
@@ -45,5 +50,6 @@ if [[ "$isKubectl" = "1" ]]; then
 	echo "source <(kubectl completion bash)" >> $HOME/.bashrc
 fi
 
-# Reference(s)
-#https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/
+# Reference:
+#	https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/#installing-kubeadm-kubelet-and-kubectl
+#	https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/#enable-kubectl-autocompletion

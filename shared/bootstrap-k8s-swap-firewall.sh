@@ -6,6 +6,13 @@
 #     SPDX-License-Identifier: MIT                                             #
 ################################################################################
 
-echo -e "\n[Step 0] Generate and save cluster join command to /joincluster.sh"
-kubeadm token create --print-join-command > /home/vagrant/joincluster.sh
-chown $(id -u):$(id -g) /home/vagrant/joincluster.sh
+echo -e "\n[-- Update --] Updating"
+apt-get update > /dev/null #2>&1
+
+echo -e "\n[-- Swap/Firewal --] Setting Swap off and deactivating ufw"
+swapoff -a > /dev/null #2>&1
+sed -i "/swap/d" /etc/fstab > /dev/null #2>&1
+systemctl disable --now ufw > /dev/null #2>&1
+
+# References:
+#	https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/#before-you-begin
