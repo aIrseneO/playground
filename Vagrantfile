@@ -18,7 +18,6 @@ Vagrant.configure("2") do |config|
   # Global______________________________________________________________________
   # If option `run: "never"` is set named provisioner can be call with
   # `vagrant up <name|id> --provision-with <provisioner-name>`
-
   
   # Default provider
   config.vm.provider "virtualbox" do |vb|
@@ -98,6 +97,7 @@ Vagrant.configure("2") do |config|
     echo #{IP2} #{HOSTNAME2} >> /etc/hosts
     echo #{IP3} #{HOSTNAME3} >> /etc/hosts
   SCRIPT
+
 
   # TODO:  Use a loop if possible
   # Distro 1: Ubuntu............................................................
@@ -199,7 +199,6 @@ Vagrant.configure("2") do |config|
     #gvm.vm.provision "staticHosts", type: "shell", run: "once", inline: "#"
 
     #gvm.vm.provision "shell", run: "once", path: "shared/bootstrap-gke.sh"
-
   #end
 
 # Minikube______________________________________________________________________

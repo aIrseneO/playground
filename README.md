@@ -18,17 +18,24 @@ $ vagrant up worker110
 ```
 To have a the worker node join the master node run:
 ```bash
-$ vagrant provision master --provision-with generateJoinCommand
+$ vagrant provision master100 --provision-with generateJoinCommand
 $ MASTER=master100 vagrant provision worker110 --provision-with joinMasterNode
 ```
-
 Others:
-- To configure a default storage class from a NFS server:
+- To set up custom bash_fancy and vimrc:
 	```bash
-
+	$ vagrant provision master100 --provision-with myconf
+	```
+- To set up MetalLB load Balancer:
+	```bash
+	$ IP=<IP Range> vagrant provision master100 --provision-with metalLB
 	```
 - To configure a default storage class from a NFS server:
 	```bash
-	
+	$ NFS=<server IP> vagrant provision master100 --provision-with nfsStorage
+	```
+- To set up Octant:
+	```bash
+	$ vagrant provision master100 --provision-with octant
 	```
 The `Vagrantfile` is designed to be highly configurable and self-explanatory, check it out for more.
