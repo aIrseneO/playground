@@ -1,0 +1,7 @@
+bootstrap-k8s-swap-firewall.sh
+bootstrap-k8s-iptables.sh
+bootstrap-docker-ubuntu.sh
+bootstrap-k8s-cri.sh
+bootstrap-k8s-kube-tools.sh
+bootstrap-k8s-init.sh - master
+bootstrap-k8s-cni.sh - master
