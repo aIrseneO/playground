@@ -13,12 +13,22 @@ The resources are requested in the `Vagrantfile`, update if needed.
 >> ### Create a cluster:
 Spin up two Nodes, one master and one worker:
 ```bash
-$ vagrant up master10
-$ vagrant up worker100
+$ vagrant up master100
+$ vagrant up worker110
 ```
 To have a the worker node join the master node run:
 ```bash
 $ vagrant provision master --provision-with generateJoinCommand
-$ MASTER=master10 vagrant provision worker100 --provision-with joinMasterNode
+$ MASTER=master100 vagrant provision worker110 --provision-with joinMasterNode
 ```
+
+Others:
+- To configure a default storage class from a NFS server:
+	```bash
+
+	```
+- To configure a default storage class from a NFS server:
+	```bash
+	
+	```
 The `Vagrantfile` is designed to be highly configurable and self-explanatory, check it out for more.

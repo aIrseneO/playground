@@ -1,5 +1,6 @@
 #!/bin/bash
 
+NAME=Helm
 VERSION=3.7.2-1
 
 curl https://baltocdn.com/helm/signing.asc | sudo apt-key add -

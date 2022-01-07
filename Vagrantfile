@@ -38,9 +38,6 @@ Vagrant.configure("2") do |config|
   config.vm.provision "myconf", type: "shell", run: "never",
     path: "shared/mydefault-conf.sh", args: "vagrant root"
 
-  config.vm.provision "helm", type: "shell", run: "never",
-    path: "shared/bootstrap-helm.sh"
-
   #TODO: Use a personalized ssh conf `mySshConfig`?
   config.vm.provision "file", run: "once", source: "shared/ssh_config",
     destination: "/home/vagrant/.ssh/config"
@@ -226,7 +223,7 @@ Vagrant.configure("2") do |config|
       path: "shared/bootstrap-docker-ubuntu.sh"
 
     mk.vm.provision  "shell", run: "once",
-      path: "shared/bootstrap-k8s-tools.sh", args: "#{K8S_VERSION_MK} kubectl"
+      path: "shared/k8s/bootstrap-k8s-tools.sh", args: "#{K8S_VERSION_MK} kubectl"
 
     mk.vm.provision "shell", run: "once",
       path: "shared/bootstrap-minikube-node.sh"
@@ -290,10 +287,25 @@ Vagrant.configure("2") do |config|
   SHELL
 
   config.vm.provision "generateJoinCommand", type: "shell", run: "never",
-    path: "shared/bootstrap-k8s-join-token.sh"
+    path: "shared/k8s/bootstrap-k8s-join-token.sh"
 
   config.vm.provision "joinMasterNode", type: "shell", run: "never",
-    path: "shared/bootstrap-k8s-join-master.sh", env: {MASTER:ENV['MASTER']}
+    path: "shared/k8s/bootstrap-k8s-join-master.sh", env: {MASTER:ENV['MASTER']}
+
+  config.vm.provision "helm", type: "shell", run: "never",
+    path: "shared/k8s/bootstrap-k8s-helm.sh"
+
+  config.vm.provision "metalLB", type: "shell", run: "never",
+    path: "shared/k8s/bootstrap-k8s-metalLB.sh", env: {IP:ENV['IP']}
+
+  config.vm.provision "nfsStorage", type: "shell", run: "never",
+    path: "shared/k8s/bootstrap-k8s-storage-class.sh", env: {NFS:ENV['NFS']}
+
+  config.vm.provision "octant", type: "shell", run: "never",
+    path: "shared/k8s/bootstrap-k8s-octant.sh"
+
+#  config.vm.provision "jenkinsX", type: "shell", run: "never",
+#    path: "shared/k8s/bootstrap-k8s-jenkinsx.sh"
 
   # Master Node(s)..............................................................
   (MinMaster..MaxMaster).each do |i|
@@ -308,25 +320,27 @@ Vagrant.configure("2") do |config|
         vb.name = "master#{i}"
         vb.gui = false
         vb.cpus = "3"
-        vb.memory = "4096"
+        vb.memory = "3072"
       end
 
       masteri.vm.provision "shell", run: "once",
-        path: "shared/bootstrap-k8s-swap-firewall.sh"
+        path: "shared/k8s/bootstrap-k8s-packages.sh"
       masteri.vm.provision "shell", run: "once",
-        path: "shared/bootstrap-k8s-iptables.sh"
+        path: "shared/k8s/bootstrap-k8s-swap-firewall.sh"
+      masteri.vm.provision "shell", run: "once",
+        path: "shared/k8s/bootstrap-k8s-iptables.sh"
       masteri.vm.provision "shell", run: "once",
         path: "shared/bootstrap-docker-ubuntu.sh"
       masteri.vm.provision "shell", run: "once",
-        path: "shared/bootstrap-k8s-cri.sh"
+        path: "shared/k8s/bootstrap-k8s-cri.sh"
       masteri.vm.provision "shell", run: "once",
-        path: "shared/bootstrap-k8s-kube-tools.sh",
+        path: "shared/k8s/bootstrap-k8s-kube-tools.sh",
         args: "#{K8S_VERSION} kubelet kubeadm kubectl"
       masteri.vm.provision "shell", run: "once",
-        path: "shared/bootstrap-k8s-init.sh",
-	    args: "#{MastersIP}.#{i} #{K8S_VERSION} #{CIDR}"
+        path: "shared/k8s/bootstrap-k8s-init.sh",
+        args: "#{MastersIP}.#{i} #{K8S_VERSION} #{CIDR}"
       masteri.vm.provision "shell", run: "once",
-        path: "shared/bootstrap-k8s-cni.sh", args: "#{CALICO_VERSION}"
+        path: "shared/k8s/bootstrap-k8s-cni.sh", args: "#{CALICO_VERSION}"
     end
   end
 
@@ -347,23 +361,25 @@ Vagrant.configure("2") do |config|
       end
 
       workeri.vm.provision "shell", run: "once",
-        path: "shared/bootstrap-k8s-swap-firewall.sh"
+        path: "shared/k8s/bootstrap-k8s-packages.sh"
       workeri.vm.provision "shell", run: "once",
-        path: "shared/bootstrap-k8s-iptables.sh"
+        path: "shared/k8s/bootstrap-k8s-swap-firewall.sh"
+      workeri.vm.provision "shell", run: "once",
+        path: "shared/k8s/bootstrap-k8s-iptables.sh"
       workeri.vm.provision "shell", run: "once",
         path: "shared/bootstrap-docker-ubuntu.sh"
       workeri.vm.provision "shell", run: "once",
-        path: "shared/bootstrap-k8s-cri.sh"
+        path: "shared/k8s/bootstrap-k8s-cri.sh"
       workeri.vm.provision "shell", run: "once",
-        path: "shared/bootstrap-k8s-kube-tools.sh",
+        path: "shared/k8s/bootstrap-k8s-kube-tools.sh",
         args: "#{K8S_VERSION} kubelet kubeadm kubectl"
     end
   end
 
 end
 
-# Clean up
-#	Remove virtual Box interface vboxnetX:
+# Clean up:
+#	Remove virtual Box interface `vboxnetX`:
 #		$ VBoxManage hostonlyif remove vboxnetX
 
 # Reference(s):
