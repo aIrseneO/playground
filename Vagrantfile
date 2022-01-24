@@ -384,4 +384,3 @@ end
 
 # Reference(s):
 #https://www.vagrantup.com/docs
-#https://github.com/justmeandopensource/kubernetes/tree/master/vagrant-provisioning
