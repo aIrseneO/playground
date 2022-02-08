@@ -1,0 +1,11 @@
+controller:
+  image: "airseneo/jenkins"
+  tag: "latest"
+  resources:
+    requests:
+      cpu: "50m"
+      memory: "256Mi"
+    limits:
+      cpu: "2000m"
+      memory: "4096Mi"
+  installPlugins:
