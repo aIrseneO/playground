@@ -1,0 +1,15 @@
+replicaCount: 1
+strategyType: Recreate
+
+nfs:
+  server: 192.168.0.100
+  path: /srv/nfs/kubedata
+  reclaimPolicy: Retain
+
+storageClass:
+  create: true
+  defaultClass: true
+  name: nfs-client
+  allowVolumeExpansion: true
+  reclaimPolicy: Retain
+  archiveOnDelete: true

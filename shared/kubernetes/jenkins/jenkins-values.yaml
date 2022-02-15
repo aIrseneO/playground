@@ -9,3 +9,8 @@ controller:
       cpu: "2000m"
       memory: "4096Mi"
   installPlugins:
+agent:
+  enabled: true
+  namespace:
+  image: "jenkins/inbound-agent"
+  tag: "alpine-jdk11"
