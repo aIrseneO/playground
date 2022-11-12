@@ -3,7 +3,7 @@ echo -e "\
 alias vagrant='\
 NAME=ubuntu \
 IMAGE=generic/ubuntu1804 \
-TAG=3.6.4 \
+TAG=4.1.20 \
 NETWORK=private \
 IP=192.168.42.10 \
 HOSTNAME=ubuntu \
