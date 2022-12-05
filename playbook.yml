@@ -1,0 +1,28 @@
+---
+- hosts: master
+  pre_tasks:
+    - name: Include variable(s)
+      include_vars: nodes/master.yml
+    - include_tasks: tasks/sysctl-setup.yml
+  vars:
+    kubernetes_role: control_plane
+    kubernetes_apiserver_advertise_address: '{{ IP }}'
+    kubernetes_allow_pods_on_control_plane: true
+  become: yes
+  roles:
+    - geerlingguy.containerd
+    - ansible-role-kubernetes
+    # - geerlingguy.kubernetes
+  post_tasks:
+    - shell: echo "Done!"
+
+- hosts: worker*
+  pre_tasks:
+    - include_tasks: tasks/sysctl-setup.yml
+  vars:
+    kubernetes_role: node
+  become: yes
+  roles:
+    - geerlingguy.containerd
+    - ansible-role-kubernetes
+    # - geerlingguy.kubernetes

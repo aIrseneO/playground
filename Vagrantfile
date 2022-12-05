@@ -12,8 +12,10 @@ ENV['VAGRANT_CHECKPOINT_DISABLE']			= 'yes'
 ENV['VAGRANT_DISABLE_VBOXSYMLINKCREATE']	= 'yes'
 ENV['VAGRANT_NO_PARALLEL']					= 'yes'
 
-PATH = ENV["_PATH"] || "void.sh"
-ARGS = ENV["_ARGS"] || ""
+PATH = ENV["SCRIPT"] || "void"
+ARGS = ENV["SCRIPT_ARGS"] || ""
+
+PLAYBOOK = ENV["PLAYBOOK"] || "void"
 
 Vagrant.configure("2") do |config|
   # For a complete reference, the online documentation is at
@@ -22,6 +24,11 @@ Vagrant.configure("2") do |config|
   # Enable provisioning with a shell script.
   config.vm.provision "script", type: "shell", run: "never",
     path: "#{PATH}", args: "#{ARGS}"
+
+  # Enable provisioning with ansible.
+  config.vm.provision "ansible" do |ansible|
+    ansible.playbook = "#{ENV['PLAYBOOK']}"
+  end
 
   config.vm.define "#{ENV['NAME']}", autostart: false do |node|
 
